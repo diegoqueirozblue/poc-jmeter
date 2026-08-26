@@ -1,0 +1,15 @@
+# Local configuration and credentials
+config/benchmark.properties
+
+# JMeter output
+jmeter.log
+results/*.jtl
+results/report/
+results/baseline/*
+results/partitioned/*
+!results/baseline/.gitkeep
+!results/partitioned/.gitkeep
+
+# Local JMeter installation or JDBC drivers
+lib/
+*.jar

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="PostgreSQL Query Benchmark" enabled="true">
+      <stringProp name="TestPlan.comments">Minimal PostgreSQL query benchmark</stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="query_file" elementType="Argument">
+            <stringProp name="Argument.name">query_file</stringProp>
+            <stringProp name="Argument.value">${__P(query.file,queries/consulta_exemplo.sql)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="data_file" elementType="Argument">
+            <stringProp name="Argument.name">data_file</stringProp>
+            <stringProp name="Argument.value">${__P(data.file,data/parametros.csv)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <JDBCDataSource guiclass="TestBeanGUI" testclass="JDBCDataSource" testname="PostgreSQL Connection" enabled="true">
+        <stringProp name="dataSource">benchmark</stringProp>
+        <stringProp name="dbUrl">${__P(db.url,jdbc:postgresql://${__P(db.host,localhost)}:${__P(db.port,5432)}/${__P(db.name,postgres)})}</stringProp>
+        <stringProp name="driver">${__P(db.driver,org.postgresql.Driver)}</stringProp>
+        <stringProp name="password">${__P(db.password,)}</stringProp>
+        <stringProp name="username">${__P(db.user,)}</stringProp>
+        <stringProp name="poolMax">0</stringProp>
+        <stringProp name="timeout">10000</stringProp>
+        <boolProp name="autocommit">true</boolProp>
+        <stringProp name="transactionIsolation">DEFAULT</stringProp>
+        <stringProp name="poolPreparedStatements">-1</stringProp>
+        <stringProp name="connectionAge">5000</stringProp>
+        <stringProp name="trimInterval">60000</stringProp>
+        <stringProp name="connectionProperties"></stringProp>
+        <boolProp name="keepAlive">true</boolProp>
+        <boolProp name="preinit">false</boolProp>
+        <stringProp name="initQuery"></stringProp>
+        <stringProp name="checkQuery"></stringProp>
+        <stringProp name="validationQuery"></stringProp>
+      </JDBCDataSource>
+      <hashTree/>
+      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Query Parameters" enabled="true">
+        <stringProp name="filename">${data_file}</stringProp>
+        <stringProp name="fileEncoding">UTF-8</stringProp>
+        <stringProp name="variableNames">loja_key,data_inicio,data_fim</stringProp>
+        <boolProp name="ignoreFirstLine">true</boolProp>
+        <boolProp name="quotedData">false</boolProp>
+        <boolProp name="recycle">true</boolProp>
+        <boolProp name="stopThread">false</boolProp>
+        <stringProp name="shareMode">shareMode.all</stringProp>
+      </CSVDataSet>
+      <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Query Load" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Iterations" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">${__P(iterations,10)}</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">${__P(threads,1)}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${__P(ramp_up_seconds,0)}</stringProp>
+        <boolProp name="ThreadGroup.scheduler">${__P(scheduler,false)}</boolProp>
+        <stringProp name="ThreadGroup.duration">${__P(duration_seconds,0)}</stringProp>
+        <stringProp name="ThreadGroup.delay">0</stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Execute External Query" enabled="true">
+          <stringProp name="dataSource">benchmark</stringProp>
+          <stringProp name="queryType">Prepared Select Statement</stringProp>
+          <stringProp name="query">${__FileToString(${query_file},UTF-8,)}</stringProp>
+          <stringProp name="queryArguments">${loja_key},${data_inicio},${data_fim}</stringProp>
+          <stringProp name="queryArgumentsTypes">INTEGER,TIMESTAMP,TIMESTAMP</stringProp>
+          <stringProp name="resultVariable"></stringProp>
+          <stringProp name="variableNames"></stringProp>
+          <stringProp name="queryTimeout">0</stringProp>
+          <stringProp name="resultSetMaxRows">-1</stringProp>
+          <stringProp name="resultSetHandler">Store as String</stringProp>
+        </JDBCSampler>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

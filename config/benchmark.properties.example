@@ -1,0 +1,21 @@
+# PostgreSQL connection. db.url can override the URL assembled from these values.
+db.host=localhost
+db.port=5432
+db.name=postgres
+db.user=postgres
+db.password=change-me
+db.driver=org.postgresql.Driver
+
+# External inputs, relative to the project root
+query.file=queries/consulta_exemplo.sql
+data.file=data/parametros.csv
+
+# Load profile
+threads=1
+ramp_up_seconds=0
+iterations=10
+scheduler=false
+duration_seconds=0
+
+# JMeter result format
+jmeter.save.saveservice.output_format=csv
