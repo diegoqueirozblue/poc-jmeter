@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Plano de Testes - Performance log_auditoria" enabled="true">
+      <stringProp name="TestPlan.comments">Plano de teste JMeter para benchmark da tabela public.log_auditoria</stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+    </TestPlan>
+    <hashTree>
+      <!-- Configuration: Conexão PostgreSQL -->
+      <JDBCDataSource guiclass="TestBeanGUI" testclass="JDBCDataSource" testname="Configuração Conexão PostgreSQL (qa_homo)" enabled="true">
+        <stringProp name="dataSource">pg_pool_qa_homo</stringProp>
+        <stringProp name="poolMax">20</stringProp>
+        <stringProp name="timeout">10000</stringProp>
+        <stringProp name="trimInterval">60000</stringProp>
+        <boolProp name="autocommit">true</boolProp>
+        <stringProp name="transactionIsolation">DEFAULT</stringProp>
+        <boolProp name="preinit">false</boolProp>
+        <stringProp name="initQuery"></stringProp>
+        <boolProp name="keepAlive">true</boolProp>
+        <stringProp name="connectionAge">5000</stringProp>
+        <stringProp name="checkQuery">SELECT 1</stringProp>
+        <stringProp name="dbUrl">jdbc:postgresql://localhost/qa_homo</stringProp>
+        <stringProp name="driver">org.postgresql.Driver</stringProp>
+        <stringProp name="username">qa_homo</stringProp>
+        <stringProp name="password">qa_homo</stringProp>
+        <stringProp name="connectionProperties"></stringProp>
+      </JDBCDataSource>
+      <hashTree/>
+
+      <!-- Thread Group: Carga de Usuários -->
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Grupo de Usuarios (Carga Log Auditoria)" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">10</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">10</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">5</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+      </ThreadGroup>
+      <hashTree>
+
+        <!-- Sampler 1: Contagem de Registros -->
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="01 - Query: Contagem de Registros" enabled="true">
+          <stringProp name="dataSource">pg_pool_qa_homo</stringProp>
+          <stringProp name="queryType">Select Statement</stringProp>
+          <stringProp name="query">SELECT count(*) FROM public.log_auditoria;</stringProp>
+        </JDBCSampler>
+        <hashTree/>
+
+        <!-- Sampler 2: Consulta aos últimos registros -->
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="02 - Query: Buscar ultimos 100 logs" enabled="true">
+          <stringProp name="dataSource">pg_pool_qa_homo</stringProp>
+          <stringProp name="queryType">Select Statement</stringProp>
+          <stringProp name="query">SELECT * FROM public.log_auditoria ORDER BY 1 DESC LIMIT 100;</stringProp>
+        </JDBCSampler>
+        <hashTree/>
+
+        <!-- Listener: Relatório Agregado -->
+        <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Relatorio Agregado (Aggregate Report)" enabled="true"/>
+        <hashTree/>
+
+        <!-- Listener: Árvore de Resultados -->
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="Ver Arvore de Resultados (View Results Tree)" enabled="true"/>
+        <hashTree/>
+
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
