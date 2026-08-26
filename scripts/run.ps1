@@ -17,7 +17,21 @@ if (-not (Test-Path $ConfigFile)) {
     throw "Configuration file not found: $ConfigFile. Copy config/benchmark.properties.example first."
 }
 
-$JMeterBin = if ($env:JMETER_BIN) { $env:JMETER_BIN } else { "jmeter" }
+if ($env:JMETER_BIN) {
+    $JMeterBin = $env:JMETER_BIN
+} elseif ($env:JMETER_HOME) {
+    $JMeterBin = Join-Path $env:JMETER_HOME "bin/jmeter.bat"
+} elseif (Get-Command jmeter -ErrorAction SilentlyContinue) {
+    $JMeterBin = (Get-Command jmeter).Source
+} else {
+    $JMeterBin = Join-Path $RootDir "apache-jmeter/bin/jmeter.bat"
+}
+
+if (-not (Test-Path $JMeterBin)) {
+    throw "JMeter executable not found: $JMeterBin"
+}
+
+Write-Host "Using JMeter: $JMeterBin"
 $JtlFile = if ($env:JTL_FILE) { $env:JTL_FILE } else { Join-Path $ResultDir "result.jtl" }
 $ReportDir = if ($env:REPORT_DIR) { $env:REPORT_DIR } else { Join-Path $ResultDir "report" }
 

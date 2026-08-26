@@ -5,8 +5,9 @@ estrutural, como particionamento de tabela.
 
 ## Pré-requisitos
 
-- Apache JMeter 5.6.3 instalado. O script Bash usa ./apache-jmeter local por padrão; altere
-  `JMETER_HOME` para outro local.
+- Apache JMeter 5.6.3 instalado ou a cópia vendor em `apache-jmeter/`.
+  Os scripts preferem uma instalação explícita ou disponível no `PATH` e usam
+  o vendor como fallback.
 - Driver JDBC do PostgreSQL (`postgresql-*.jar`) no diretório `lib/` do JMeter.
 - Banco PostgreSQL acessível e com a tabela usada pela consulta de exemplo.
 
@@ -38,11 +39,14 @@ jmeter -n -t jmeter/benchmark.jmx \
   -Jthreads=4 -Jiterations=100
 ```
 
-Para selecionar explicitamente outra instalação no script Bash:
+Para selecionar explicitamente outra instalação:
 
 ```bash
 JMETER_HOME=/caminho/apache-jmeter ./scripts/run.sh
 ```
+
+Consulte [AGENTS.md](AGENTS.md) e o [guia de manutenção](docs/MAINTENANCE.md)
+para as regras de operação, resolução do JMeter e manutenção do vendor.
 
 A consulta é selecionada por `query.file` e os parâmetros são lidos de
 `data.file`. Ambos os caminhos são relativos à raiz do projeto.
